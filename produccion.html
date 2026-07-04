@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Módulo de Producción - Acme</title>
+    <link rel="stylesheet" href="produccion.css" />
+</head>
+
+<body>
+    <main class="login-page">
+        <section class="login-card">
+            <div class="logo">
+                <h1>Acme</h1>
+                <p>Módulo de producción</p>
+            </div>
+
+            <nav class="main-nav">
+                <a href="login.html">Login</a>
+                <a href="usuario.html">Usuarios</a>
+                <a href="inventario.html">Inventario</a>
+                <a href="produccion.html">Producción</a>
+            </nav>
+
+            <div class="forms-grid">
+                <form class="create-form" action="#" method="post">
+                    <h2>Crear proceso de producción</h2>
+                    <p>Define una nueva fórmula o proceso productivo.</p>
+
+                    <div class="form-group">
+                        <label for="crear-codigo-proceso">Código del proceso</label>
+                        <input id="crear-codigo-proceso" name="crear-codigo-proceso" type="text" placeholder="PRO-001"
+                            required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="crear-nombre-proceso">Nombre del proceso</label>
+                        <input id="crear-nombre-proceso" name="crear-nombre-proceso" type="text"
+                            placeholder="Mezcla básica" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="crear-descripcion">Descripción</label>
+                        <textarea id="crear-descripcion" name="crear-descripcion" placeholder="Describe el proceso..."
+                            required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="crear-duracion">Duración (minutos)</label>
+                        <input id="crear-duracion" name="crear-duracion" type="number" placeholder="30" min="1"
+                            required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="crear-responsable">Responsable</label>
+                        <input id="crear-responsable" name="crear-responsable" type="text"
+                            placeholder="Nombre del supervisor" required />
+                    </div>
+
+                    <div class="form-message" id="create-message"></div>
+                    <button type="submit" class="btn-submit">Crear proceso</button>
+                </form>
+
+                <form class="search-form" action="#" method="get">
+                    <h2>Buscar / editar proceso</h2>
+                    <p>Busca por código y actualiza el proceso productivo.</p>
+
+                    <div class="form-group">
+                        <label for="buscar-codigo-proceso">Código del proceso</label>
+                        <input id="buscar-codigo-proceso" name="buscar-codigo-proceso" type="text" placeholder="PRO-001"
+                            required />
+                    </div>
+
+                    <div class="form-message" id="search-message"></div>
+                    <button type="submit" class="btn-submit">Buscar proceso</button>
+                </form>
+            </div>
+
+            <form class="edit-form" action="#" method="post">
+                <h2>Editar proceso</h2>
+                <p>Modifica los detalles o elimina el proceso seleccionado.</p>
+
+                <div class="form-group">
+                    <label for="proceso-codigo">Código</label>
+                    <input id="proceso-codigo" name="proceso-codigo" type="text" readonly />
+                </div>
+
+                <div class="form-group">
+                    <label for="proceso-nombre">Nombre del proceso</label>
+                    <input id="proceso-nombre" name="proceso-nombre" type="text" />
+                </div>
+
+                <div class="form-group">
+                    <label for="proceso-descripcion">Descripción</label>
+                    <textarea id="proceso-descripcion" name="proceso-descripcion"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="proceso-duracion">Duración (minutos)</label>
+                    <input id="proceso-duracion" name="proceso-duracion" type="number" min="1" />
+                </div>
+
+                <div class="form-group">
+                    <label for="proceso-responsable">Responsable</label>
+                    <input id="proceso-responsable" name="proceso-responsable" type="text" />
+                </div>
+
+                <div class="button-row">
+                    <button type="submit" class="btn-submit">Guardar cambios</button>
+                    <button type="button" class="btn-delete" id="delete-process">Eliminar proceso</button>
+                </div>
+                <div class="form-message" id="edit-message"></div>
+            </form>
+
+            <div class="list-section">
+                <h2>Procesos de producción</h2>
+                <p>Consulta la lista de procesos y fórmulas registradas.</p>
+                <div class="process-list" id="process-list"></div>
+            </div>
+        </section>
+    </main>
+    <script src="produccion.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Módulo de Inventario - Acme</title>
+    <link rel="stylesheet" href="inventario.css" />
+</head>
+
+<body>
+    <main class="login-page">
+        <section class="login-card">
+            <div class="logo">
+                <h1>Acme</h1>
+                <p>Módulo de inventario</p>
+            </div>
+
+            <nav class="main-nav">
+                <a href="login.html">Login</a>
+                <a href="usuario.html">Usuarios</a>
+                <a href="inventario.html">Inventario</a>
+                <a href="produccion.html">Producción</a>
+            </nav>
+
+            <div class="forms-grid">
+                <form class="create-form" action="#" method="post">
+                    <h2>Crear inventario</h2>
+                    <p>Agregar producto o materia prima al stock.</p>
+
+                    <div class="form-group">
+                        <label for="crear-codigo">Código del producto</label>
+                        <input id="crear-codigo" name="crear-codigo" type="text" placeholder="PRD-001" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="crear-nombre">Nombre</label>
+                        <input id="crear-nombre" name="crear-nombre" type="text" placeholder="Harina" required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="crear-proveedor">Proveedor</label>
+                        <input id="crear-proveedor" name="crear-proveedor" type="text" placeholder="Acme Foods"
+                            required />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="crear-cantidad">Cantidad en stock</label>
+                        <input id="crear-cantidad" name="crear-cantidad" type="number" placeholder="100" min="0"
+                            required />
+                    </div>
+
+                    <div class="form-message" id="create-message"></div>
+                    <button type="submit" class="btn-submit">Agregar producto</button>
+                </form>
+
+                <form class="search-form" action="#" method="get">
+                    <h2>Buscar / editar inventario</h2>
+                    <p>Busca por código y actualiza los datos del producto.</p>
+
+                    <div class="form-group">
+                        <label for="buscar-codigo">Código del producto</label>
+                        <input id="buscar-codigo" name="buscar-codigo" type="text" placeholder="PRD-001" required />
+                    </div>
+
+                    <div class="form-message" id="search-message"></div>
+                    <button type="submit" class="btn-submit">Buscar producto</button>
+                </form>
+            </div>
+
+            <form class="edit-form" action="#" method="post">
+                <h2>Editar producto</h2>
+                <p>Modifica stock o elimina el producto seleccionado.</p>
+
+                <div class="form-group">
+                    <label for="producto-codigo">Código</label>
+                    <input id="producto-codigo" name="producto-codigo" type="text" readonly />
+                </div>
+
+                <div class="form-group">
+                    <label for="producto-nombre">Nombre</label>
+                    <input id="producto-nombre" name="producto-nombre" type="text" />
+                </div>
+
+                <div class="form-group">
+                    <label for="producto-proveedor">Proveedor</label>
+                    <input id="producto-proveedor" name="producto-proveedor" type="text" />
+                </div>
+
+                <div class="form-group">
+                    <label for="producto-cantidad">Cantidad en stock</label>
+                    <input id="producto-cantidad" name="producto-cantidad" type="number" min="0" />
+                </div>
+
+                <div class="button-row">
+                    <button type="submit" class="btn-submit">Guardar cambios</button>
+                    <button type="button" class="btn-delete" id="delete-product">Eliminar producto</button>
+                </div>
+                <div class="form-message" id="edit-message"></div>
+            </form>
+
+            <div class="list-section">
+                <h2>Productos en inventario</h2>
+                <p>Consulta la lista de productos y materias primas registradas.</p>
+                <div class="item-list" id="item-list"></div>
+            </div>
+        </section>
+    </main>
+    <script src="inventario.js"></script>
+</body>
+
+</html>

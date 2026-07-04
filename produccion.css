@@ -1,0 +1,470 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Inter", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: radial-gradient(circle at top, rgba(59, 130, 246, 0.2), transparent 35%),
+        radial-gradient(circle at right, rgba(16, 185, 129, 0.15), transparent 25%),
+        linear-gradient(180deg, #020617 0%, #0f172a 100%);
+    color: #f3f4f6;
+    min-height: 100vh;
+}
+
+.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 16px;
+}
+
+.login-card {
+    background: rgba(15, 23, 42, 0.95);
+    border-radius: 20px;
+    box-shadow: 0 24px 80px rgba(15, 23, 42, 0.35);
+    max-width: 1200px;
+    width: 100%;
+    padding: 20px;
+    border: 1px solid rgba(148, 163, 184, 0.16);
+}
+
+.logo {
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.logo h1 {
+    font-size: 1.6rem;
+    color: #f3f4f6;
+    margin-bottom: 4px;
+}
+
+.logo p {
+    font-size: 0.85rem;
+    color: #94a3b8;
+}
+
+.main-nav {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.main-nav a {
+    padding: 7px 12px;
+    background-color: rgba(148, 163, 184, 0.14);
+    color: #e2e8f0;
+    text-decoration: none;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.main-nav a:hover {
+    background-color: rgba(96, 165, 250, 0.18);
+    transform: translateY(-1px);
+}
+
+.forms-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+form {
+    background-color: rgba(15, 23, 42, 0.85);
+    padding: 16px;
+    border-radius: 14px;
+    border-left: 4px solid #3498db;
+    border: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+form h2 {
+    font-size: 1rem;
+    color: #e2e8f0;
+    margin-bottom: 6px;
+}
+
+form p {
+    font-size: 0.8rem;
+    color: #cbd5e1;
+    margin-bottom: 12px;
+}
+
+.form-group {
+    margin-bottom: 10px;
+}
+
+label {
+    display: block;
+    font-size: 0.75rem;
+    color: #cbd5e1;
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+
+input[type='text'],
+input[type='email'],
+input[type='password'],
+input[type='number'],
+textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid rgba(148, 163, 184, 0.18);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-family: inherit;
+    background-color: rgba(15, 23, 42, 0.72);
+    color: #f8fafc;
+    transition: border-color 0.3s;
+}
+
+input[type='text']:focus,
+input[type='email']:focus,
+input[type='password']:focus,
+input[type='number']:focus,
+textarea:focus {
+    outline: none;
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.1);
+}
+
+input[readonly] {
+    background-color: rgba(148, 163, 184, 0.14);
+    cursor: not-allowed;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 60px;
+}
+
+.form-message {
+    margin: 6px 0;
+    padding: 8px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    min-height: 1rem;
+    color: #fca5a5;
+}
+
+.form-message.success {
+    color: #86efac;
+}
+
+.btn-submit,
+.btn-delete {
+    width: 100%;
+    padding: 10px 12px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+    font-weight: 600;
+    margin-top: 6px;
+}
+
+.btn-submit {
+    background: linear-gradient(90deg, #2563eb, #4f46e5);
+    color: white;
+}
+
+.btn-submit:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 16px rgba(59, 130, 246, 0.2);
+}
+
+.btn-delete {
+    background: linear-gradient(90deg, #dc2626, #b91c1c);
+    color: white;
+}
+
+.btn-delete:hover {
+    box-shadow: 0 8px 16px rgba(220, 38, 38, 0.2);
+}
+
+.button-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.list-section {
+    margin-top: 20px;
+}
+
+.list-section h2 {
+    font-size: 1rem;
+    color: #e2e8f0;
+    margin-bottom: 6px;
+}
+
+.list-section p {
+    font-size: 0.8rem;
+    color: #cbd5e1;
+    margin-bottom: 12px;
+}
+
+.process-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+
+.process-card {
+    background-color: rgba(15, 23, 42, 0.85);
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid rgba(148, 163, 184, 0.12);
+    cursor: pointer;
+    transition: box-shadow 0.3s, transform 0.3s;
+}
+
+.process-card:hover {
+    box-shadow: 0 6px 12px rgba(59, 130, 246, 0.15);
+    transform: translateY(-2px);
+}
+
+.process-card h3 {
+    font-size: 0.95rem;
+    color: #e2e8f0;
+    margin-bottom: 6px;
+}
+
+.process-card p {
+    font-size: 0.75rem;
+    color: #cbd5e1;
+    margin-bottom: 3px;
+}
+
+.process-card strong {
+    color: #f3f4f6;
+}
+
+
+@media (min-width: 768px) {
+    .login-page {
+        padding: 20px;
+    }
+
+    .login-card {
+        padding: 28px;
+        border-radius: 22px;
+    }
+
+    .logo h1 {
+        font-size: 1.8rem;
+    }
+
+    .logo p {
+        font-size: 0.9rem;
+    }
+
+    .main-nav {
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .main-nav a {
+        padding: 8px 14px;
+        font-size: 0.8rem;
+    }
+
+    .forms-grid {
+        gap: 18px;
+        margin-bottom: 24px;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    form {
+        padding: 20px;
+        border-radius: 16px;
+    }
+
+    form h2 {
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+    }
+
+    form p {
+        font-size: 0.85rem;
+        margin-bottom: 14px;
+    }
+
+    .form-group {
+        margin-bottom: 12px;
+    }
+
+    label {
+        font-size: 0.8rem;
+        margin-bottom: 6px;
+    }
+
+    input[type='text'],
+    input[type='email'],
+    input[type='password'],
+    input[type='number'],
+    textarea {
+        padding: 11px 13px;
+        font-size: 0.9rem;
+    }
+
+    textarea {
+        min-height: 80px;
+    }
+
+    .btn-submit,
+    .btn-delete {
+        padding: 11px 13px;
+        font-size: 0.9rem;
+        margin-top: 8px;
+    }
+
+    .edit-form {
+        grid-column: 1 / -1;
+    }
+
+    .list-section {
+        margin-top: 24px;
+    }
+
+    .list-section h2 {
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+    }
+
+    .process-list {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 14px;
+    }
+
+    .process-card {
+        padding: 14px;
+        border-radius: 12px;
+    }
+
+    .process-card h3 {
+        font-size: 1rem;
+    }
+
+    .process-card p {
+        font-size: 0.8rem;
+    }
+}
+
+@media (min-width: 1025px) {
+    .login-page {
+        padding: 24px;
+    }
+
+    .login-card {
+        padding: 36px;
+    }
+
+    .logo h1 {
+        font-size: 2rem;
+    }
+
+    .logo p {
+        font-size: 1rem;
+    }
+
+    .main-nav {
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+
+    .main-nav a {
+        padding: 10px 16px;
+        font-size: 0.9rem;
+    }
+
+    .forms-grid {
+        gap: 24px;
+        margin-bottom: 30px;
+    }
+
+    form {
+        padding: 24px;
+        border-radius: 18px;
+    }
+
+    form h2 {
+        font-size: 1.3rem;
+        margin-bottom: 10px;
+    }
+
+    form p {
+        font-size: 0.95rem;
+        margin-bottom: 18px;
+    }
+
+    .form-group {
+        margin-bottom: 14px;
+    }
+
+    label {
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+    }
+
+    input[type='text'],
+    input[type='email'],
+    input[type='password'],
+    input[type='number'],
+    textarea {
+        padding: 12px 14px;
+        font-size: 0.95rem;
+    }
+
+    textarea {
+        min-height: 100px;
+    }
+
+    .btn-submit,
+    .btn-delete {
+        padding: 12px 14px;
+        font-size: 0.95rem;
+        margin-top: 10px;
+    }
+
+    .btn-submit:hover {
+        box-shadow: 0 14px 30px rgba(59, 130, 246, 0.28);
+    }
+
+    .list-section {
+        margin-top: 30px;
+    }
+
+    .list-section h2 {
+        font-size: 1.3rem;
+        margin-bottom: 12px;
+    }
+
+    .process-list {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 18px;
+    }
+
+    .process-card {
+        padding: 16px;
+        border-radius: 14px;
+    }
+
+    .process-card h3 {
+        font-size: 1.1rem;
+    }
+
+    .process-card p {
+        font-size: 0.85rem;
+    }
+}
