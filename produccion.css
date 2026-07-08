@@ -82,7 +82,6 @@ form {
     background-color: rgba(15, 23, 42, 0.85);
     padding: 16px;
     border-radius: 14px;
-    border-left: 4px solid #3498db;
     border: 1px solid rgba(148, 163, 184, 0.12);
 }
 
@@ -114,7 +113,8 @@ input[type='text'],
 input[type='email'],
 input[type='password'],
 input[type='number'],
-textarea {
+textarea,
+select {
     width: 100%;
     padding: 10px 12px;
     border: 1px solid rgba(148, 163, 184, 0.18);
@@ -130,7 +130,8 @@ input[type='text']:focus,
 input[type='email']:focus,
 input[type='password']:focus,
 input[type='number']:focus,
-textarea:focus {
+textarea:focus,
+select:focus {
     outline: none;
     border-color: #60a5fa;
     box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.1);
@@ -182,6 +183,13 @@ textarea {
     box-shadow: 0 8px 16px rgba(59, 130, 246, 0.2);
 }
 
+.btn-submit:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
 .btn-delete {
     background: linear-gradient(90deg, #dc2626, #b91c1c);
     color: white;
@@ -196,6 +204,46 @@ textarea {
     grid-template-columns: 1fr 1fr;
     gap: 10px;
     margin-top: 12px;
+}
+
+/* Vista previa de fabricación */
+.preview-section {
+    margin: 14px 0;
+}
+
+.preview-section > label {
+    display: block;
+    font-size: 0.75rem;
+    color: #cbd5e1;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.preview-list {
+    display: grid;
+    gap: 8px;
+}
+
+.preview-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(148, 163, 184, 0.12);
+    font-size: 0.8rem;
+    color: #cbd5e1;
+}
+
+.preview-item.insufficient {
+    border-color: rgba(220, 38, 38, 0.4);
+    color: #fca5a5;
+}
+
+.preview-empty {
+    font-size: 0.8rem;
+    color: #94a3b8;
 }
 
 .list-section {
@@ -225,7 +273,6 @@ textarea {
     padding: 12px;
     border-radius: 10px;
     border: 1px solid rgba(148, 163, 184, 0.12);
-    cursor: pointer;
     transition: box-shadow 0.3s, transform 0.3s;
 }
 
@@ -313,7 +360,8 @@ textarea {
     input[type='email'],
     input[type='password'],
     input[type='number'],
-    textarea {
+    textarea,
+    select {
         padding: 11px 13px;
         font-size: 0.9rem;
     }
@@ -327,10 +375,6 @@ textarea {
         padding: 11px 13px;
         font-size: 0.9rem;
         margin-top: 8px;
-    }
-
-    .edit-form {
-        grid-column: 1 / -1;
     }
 
     .list-section {
@@ -421,7 +465,8 @@ textarea {
     input[type='email'],
     input[type='password'],
     input[type='number'],
-    textarea {
+    textarea,
+    select {
         padding: 12px 14px;
         font-size: 0.95rem;
     }

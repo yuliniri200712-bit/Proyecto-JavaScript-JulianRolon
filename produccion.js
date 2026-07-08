@@ -1,20 +1,57 @@
-const createForm = document.querySelector('.create-form');
+const fabricarForm = document.querySelector('.create-form');
 const searchForm = document.querySelector('.search-form');
-const editForm = document.querySelector('.edit-form');
 const createMessage = document.getElementById('create-message');
 const searchMessage = document.getElementById('search-message');
-const editMessage = document.getElementById('edit-message');
 const processList = document.getElementById('process-list');
-const deleteButton = document.getElementById('delete-process');
+const productoSelect = document.getElementById('producto-select');
+const cantidadInput = document.getElementById('cantidad-fabricar');
+const previewList = document.getElementById('preview-list');
+const fabricarBtn = document.getElementById('fabricar-btn');
+const buscarHistorial = document.getElementById('buscar-historial');
 
 const firebaseUrl = 'https://proyectoacme-f63e6-default-rtdb.firebaseio.com';
+
+let productosCache = {};
+let historialCache = {};
 
 function setMessage(element, message, success = false) {
   element.textContent = message;
   element.classList.toggle('success', success);
 }
 
-async function fetchProcesses() {
+function isMateriaPrima(producto) {
+  return !producto.receta || Object.keys(producto.receta).length === 0;
+}
+
+async function fetchProductos() {
+  const response = await fetch(`${firebaseUrl}/productos.json`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+  if (!response.ok) {
+    throw new Error('No se pudo conectar con Firebase');
+  }
+  const data = await response.json();
+  return data || {};
+}
+
+async function writeProducto(codigo, productoData) {
+  const response = await fetch(`${firebaseUrl}/productos/${encodeURIComponent(codigo)}.json`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(productoData)
+  });
+  if (!response.ok) {
+    throw new Error('Error al guardar el producto');
+  }
+  return response.json();
+}
+
+async function fetchHistorial() {
   const response = await fetch(`${firebaseUrl}/produccion.json`, {
     method: 'GET',
     headers: {
@@ -28,186 +65,215 @@ async function fetchProcesses() {
   return data || {};
 }
 
-async function writeProcess(processId, processData) {
-  const response = await fetch(`${firebaseUrl}/produccion/${encodeURIComponent(processId)}.json`, {
+async function writeHistorial(consecutivo, registro) {
+  const response = await fetch(`${firebaseUrl}/produccion/${encodeURIComponent(consecutivo)}.json`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify(processData)
+    body: JSON.stringify(registro)
   });
   if (!response.ok) {
-    throw new Error('Error al guardar el proceso');
+    throw new Error('Error al guardar el historial');
   }
   return response.json();
 }
 
-async function deleteProcess(processId) {
-  const response = await fetch(`${firebaseUrl}/produccion/${encodeURIComponent(processId)}.json`, {
-    method: 'DELETE'
-  });
-  if (!response.ok) {
-    throw new Error('Error al eliminar el proceso');
+function nextConsecutivo(historial) {
+  const codigos = Object.keys(historial)
+    .map((codigo) => Number(codigo))
+    .filter((n) => !Number.isNaN(n));
+  if (!codigos.length) return 1;
+  return Math.max(...codigos) + 1;
+}
+
+/* --- Selección de producto elaborado --- */
+
+function poblarSelectProductos() {
+  const seleccionActual = productoSelect.value;
+  productoSelect.innerHTML = '<option value="">Selecciona un producto...</option>';
+
+  Object.values(productosCache)
+    .filter((producto) => !isMateriaPrima(producto))
+    .forEach((producto) => {
+      const option = document.createElement('option');
+      option.value = producto.codigo;
+      option.textContent = `${producto.nombre} (${producto.codigo})`;
+      productoSelect.appendChild(option);
+    });
+
+  if (seleccionActual && productosCache[seleccionActual]) {
+    productoSelect.value = seleccionActual;
   }
-  return response.json();
 }
 
-function populateEditForm(process) {
-  document.getElementById('proceso-codigo').value = process.codigo;
-  document.getElementById('proceso-nombre').value = process.nombre || '';
-  document.getElementById('proceso-descripcion').value = process.descripcion || '';
-  document.getElementById('proceso-duracion').value = process.duracion || 0;
-  document.getElementById('proceso-responsable').value = process.responsable || '';
+/* --- Vista previa en tiempo real --- */
+
+function renderPreview() {
+  const codigo = productoSelect.value;
+  const cantidad = Number(cantidadInput.value);
+  previewList.innerHTML = '';
+
+  if (!codigo || !cantidad || cantidad <= 0) {
+    previewList.innerHTML = '<p class="preview-empty">Selecciona un producto y una cantidad para ver la vista previa.</p>';
+    fabricarBtn.disabled = true;
+    return;
+  }
+
+  const producto = productosCache[codigo];
+  if (!producto || !producto.receta) {
+    previewList.innerHTML = '<p class="preview-empty">Este producto no tiene una receta definida.</p>';
+    fabricarBtn.disabled = true;
+    return;
+  }
+
+  let suficiente = true;
+
+  Object.entries(producto.receta).forEach(([codMateria, cantidadPorUnidad]) => {
+    const requerido = cantidadPorUnidad * cantidad;
+    const materia = productosCache[codMateria];
+    const disponible = materia ? (materia.stock || 0) : 0;
+    const insuficiente = disponible < requerido;
+    if (insuficiente) suficiente = false;
+
+    const row = document.createElement('div');
+    row.className = `preview-item${insuficiente ? ' insufficient' : ''}`;
+    row.innerHTML = `
+      <span>${materia ? materia.nombre : codMateria} (${codMateria})</span>
+      <span>Necesario: ${requerido} · Disponible: ${disponible}</span>
+    `;
+    previewList.appendChild(row);
+  });
+
+  fabricarBtn.disabled = !suficiente;
 }
 
-function renderProcessList(processes) {
+productoSelect.addEventListener('change', renderPreview);
+cantidadInput.addEventListener('input', renderPreview);
+
+/* --- Fabricar --- */
+
+fabricarForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  setMessage(createMessage, '');
+
+  const codigo = productoSelect.value;
+  const cantidad = Number(cantidadInput.value);
+
+  if (!codigo || !cantidad || cantidad <= 0) {
+    setMessage(createMessage, 'Selecciona un producto y una cantidad válida.');
+    return;
+  }
+
+  try {
+    productosCache = await fetchProductos();
+    const producto = productosCache[codigo];
+
+    if (!producto || !producto.receta) {
+      setMessage(createMessage, 'El producto seleccionado ya no tiene una receta válida.');
+      poblarSelectProductos();
+      return;
+    }
+
+    const requerimientos = Object.entries(producto.receta).map(([codMateria, cantidadPorUnidad]) => {
+      const requerido = cantidadPorUnidad * cantidad;
+      const materia = productosCache[codMateria];
+      const disponible = materia ? (materia.stock || 0) : 0;
+      return { codMateria, requerido, disponible, materia };
+    });
+
+    const faltantes = requerimientos.filter((r) => r.disponible < r.requerido);
+    if (faltantes.length) {
+      setMessage(createMessage, 'Stock insuficiente de materia prima para fabricar esta cantidad.');
+      renderPreview();
+      return;
+    }
+
+    for (const req of requerimientos) {
+      const nuevoStock = req.disponible - req.requerido;
+      await writeProducto(req.codMateria, { ...req.materia, stock: nuevoStock });
+    }
+
+    const nuevoStockProducto = (producto.stock || 0) + cantidad;
+    await writeProducto(codigo, { ...producto, stock: nuevoStockProducto });
+
+    historialCache = await fetchHistorial();
+    const consecutivo = nextConsecutivo(historialCache);
+    await writeHistorial(consecutivo, {
+      codigo: String(consecutivo),
+      productoCodigo: producto.codigo,
+      productoNombre: producto.nombre,
+      cantidad,
+      fecha: new Date().toISOString()
+    });
+
+    setMessage(createMessage, `Producción registrada con el código ${consecutivo}.`, true);
+    cantidadInput.value = '';
+
+    productosCache = await fetchProductos();
+    historialCache = await fetchHistorial();
+    poblarSelectProductos();
+    renderPreview();
+    renderHistorial(historialCache, buscarHistorial.value);
+  } catch (error) {
+    setMessage(createMessage, 'Error al registrar la producción.');
+  }
+});
+
+/* --- Historial --- */
+
+function renderHistorial(historial, filtro = '') {
   processList.innerHTML = '';
-  const entries = Object.values(processes);
+  const texto = filtro.trim().toLowerCase();
+
+  const entries = Object.values(historial)
+    .filter((registro) => {
+      if (!texto) return true;
+      return (
+        (registro.codigo || '').toLowerCase().includes(texto) ||
+        (registro.productoCodigo || '').toLowerCase().includes(texto) ||
+        (registro.productoNombre || '').toLowerCase().includes(texto)
+      );
+    })
+    .sort((a, b) => Number(b.codigo) - Number(a.codigo));
 
   if (!entries.length) {
     processList.innerHTML = '<p>No hay procesos de producción registrados.</p>';
     return;
   }
 
-  entries.forEach((process) => {
+  entries.forEach((registro) => {
+    const fecha = registro.fecha ? new Date(registro.fecha).toLocaleString() : 'No especificada';
     const card = document.createElement('div');
     card.className = 'process-card';
     card.innerHTML = `
-      <h3>${process.nombre || 'Sin nombre'}</h3>
-      <p><strong>Código:</strong> ${process.codigo}</p>
-      <p><strong>Descripción:</strong> ${process.descripcion || 'No especificada'}</p>
-      <p><strong>Duración:</strong> ${process.duracion || 0} minutos</p>
-      <p><strong>Responsable:</strong> ${process.responsable || 'No asignado'}</p>
+      <h3>Proceso #${registro.codigo}</h3>
+      <p><strong>Producto:</strong> ${registro.productoNombre || 'Sin nombre'} (${registro.productoCodigo || ''})</p>
+      <p><strong>Cantidad fabricada:</strong> ${registro.cantidad}</p>
+      <p><strong>Fecha:</strong> ${fecha}</p>
     `;
-    card.addEventListener('click', () => {
-      populateEditForm(process);
-      setMessage(editMessage, 'Proceso cargado para edición.', true);
-    });
     processList.appendChild(card);
   });
 }
 
-createForm.addEventListener('submit', async (event) => {
-  event.preventDefault();
-  setMessage(createMessage, '');
-
-  const codigo = document.getElementById('crear-codigo-proceso').value.trim();
-  const nombre = document.getElementById('crear-nombre-proceso').value.trim();
-  const descripcion = document.getElementById('crear-descripcion').value.trim();
-  const duracion = Number(document.getElementById('crear-duracion').value);
-  const responsable = document.getElementById('crear-responsable').value.trim();
-
-  if (!codigo || !nombre || !descripcion || Number.isNaN(duracion) || !responsable) {
-    setMessage(createMessage, 'Rellena todos los campos correctamente.');
-    return;
-  }
-
-  try {
-    const processes = await fetchProcesses();
-    if (processes[codigo]) {
-      setMessage(createMessage, 'Ya existe un proceso con ese código.');
-      return;
-    }
-
-    await writeProcess(codigo, {
-      codigo,
-      nombre,
-      descripcion,
-      duracion,
-      responsable
-    });
-
-    setMessage(createMessage, 'Proceso creado correctamente.', true);
-    createForm.reset();
-    const updatedProcesses = await fetchProcesses();
-    renderProcessList(updatedProcesses);
-  } catch (error) {
-    setMessage(createMessage, 'Error al crear el proceso.');
-  }
+buscarHistorial.addEventListener('input', () => {
+  renderHistorial(historialCache, buscarHistorial.value);
 });
 
-searchForm.addEventListener('submit', async (event) => {
+searchForm.addEventListener('submit', (event) => {
   event.preventDefault();
-  setMessage(searchMessage, '');
-
-  const codigo = document.getElementById('buscar-codigo-proceso').value.trim();
-  if (!codigo) {
-    setMessage(searchMessage, 'Ingresa el código del proceso.');
-    return;
-  }
-
-  try {
-    const processes = await fetchProcesses();
-    const process = processes[codigo];
-    if (!process) {
-      setMessage(searchMessage, 'Proceso no encontrado.');
-      return;
-    }
-
-    populateEditForm(process);
-    setMessage(searchMessage, 'Proceso encontrado.', true);
-  } catch (error) {
-    setMessage(searchMessage, 'Error al buscar el proceso.');
-  }
-});
-
-editForm.addEventListener('submit', async (event) => {
-  event.preventDefault();
-  setMessage(editMessage, '');
-
-  const codigo = document.getElementById('proceso-codigo').value.trim();
-  const nombre = document.getElementById('proceso-nombre').value.trim();
-  const descripcion = document.getElementById('proceso-descripcion').value.trim();
-  const duracion = Number(document.getElementById('proceso-duracion').value);
-  const responsable = document.getElementById('proceso-responsable').value.trim();
-
-  if (!codigo) {
-    setMessage(editMessage, 'Carga primero un proceso para editar.');
-    return;
-  }
-
-  try {
-    await writeProcess(codigo, {
-      codigo,
-      nombre,
-      descripcion,
-      duracion,
-      responsable
-    });
-
-    setMessage(editMessage, 'Proceso actualizado correctamente.', true);
-    const processes = await fetchProcesses();
-    renderProcessList(processes);
-  } catch (error) {
-    setMessage(editMessage, 'Error al actualizar el proceso.');
-  }
-});
-
-deleteButton.addEventListener('click', async () => {
-  setMessage(editMessage, '');
-
-  const codigo = document.getElementById('proceso-codigo').value.trim();
-  if (!codigo) {
-    setMessage(editMessage, 'Carga primero un proceso para eliminar.');
-    return;
-  }
-
-  try {
-    await deleteProcess(codigo);
-    setMessage(editMessage, 'Proceso eliminado correctamente.', true);
-    editForm.reset();
-    const processes = await fetchProcesses();
-    renderProcessList(processes);
-  } catch (error) {
-    setMessage(editMessage, 'Error al eliminar el proceso.');
-  }
+  const texto = buscarHistorial.value.trim();
+  renderHistorial(historialCache, texto);
+  setMessage(searchMessage, 'Historial filtrado.', true);
 });
 
 window.addEventListener('load', async () => {
   try {
-    const processes = await fetchProcesses();
-    renderProcessList(processes);
+    productosCache = await fetchProductos();
+    historialCache = await fetchHistorial();
+    poblarSelectProductos();
+    renderHistorial(historialCache);
   } catch (error) {
-    processList.innerHTML = '<p>No se pudo cargar la lista de procesos.</p>';
+    processList.innerHTML = '<p>No se pudo cargar el historial de producción.</p>';
   }
 });

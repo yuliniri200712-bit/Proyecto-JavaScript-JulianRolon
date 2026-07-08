@@ -19,103 +19,56 @@
             <nav class="main-nav">
                 <a href="login.html">Login</a>
                 <a href="usuario.html">Usuarios</a>
-                <a href="inventario.html">Inventario</a>
+                <a href="productos.html">Productos</a>
                 <a href="produccion.html">Producción</a>
             </nav>
 
             <div class="forms-grid">
                 <form class="create-form" action="#" method="post">
-                    <h2>Crear proceso de producción</h2>
-                    <p>Define una nueva fórmula o proceso productivo.</p>
+                    <h2>Fabricar producto</h2>
+                    <p>Selecciona un producto elaborado y la cantidad a fabricar.</p>
 
                     <div class="form-group">
-                        <label for="crear-codigo-proceso">Código del proceso</label>
-                        <input id="crear-codigo-proceso" name="crear-codigo-proceso" type="text" placeholder="PRO-001"
+                        <label for="producto-select">Producto elaborado</label>
+                        <select id="producto-select" name="producto-select" required>
+                            <option value="">Selecciona un producto...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cantidad-fabricar">Cantidad a fabricar</label>
+                        <input id="cantidad-fabricar" name="cantidad-fabricar" type="number" placeholder="1" min="1"
                             required />
                     </div>
 
-                    <div class="form-group">
-                        <label for="crear-nombre-proceso">Nombre del proceso</label>
-                        <input id="crear-nombre-proceso" name="crear-nombre-proceso" type="text"
-                            placeholder="Mezcla básica" required />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="crear-descripcion">Descripción</label>
-                        <textarea id="crear-descripcion" name="crear-descripcion" placeholder="Describe el proceso..."
-                            required></textarea>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="crear-duracion">Duración (minutos)</label>
-                        <input id="crear-duracion" name="crear-duracion" type="number" placeholder="30" min="1"
-                            required />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="crear-responsable">Responsable</label>
-                        <input id="crear-responsable" name="crear-responsable" type="text"
-                            placeholder="Nombre del supervisor" required />
+                    <div class="preview-section">
+                        <label>Materia prima necesaria</label>
+                        <div class="preview-list" id="preview-list">
+                            <p class="preview-empty">Selecciona un producto y una cantidad para ver la vista previa.</p>
+                        </div>
                     </div>
 
                     <div class="form-message" id="create-message"></div>
-                    <button type="submit" class="btn-submit">Crear proceso</button>
+                    <button type="submit" class="btn-submit" id="fabricar-btn" disabled>Fabricar</button>
                 </form>
 
                 <form class="search-form" action="#" method="get">
-                    <h2>Buscar / editar proceso</h2>
-                    <p>Busca por código y actualiza el proceso productivo.</p>
+                    <h2>Buscar en historial</h2>
+                    <p>Filtra el historial de producción por código o nombre del producto.</p>
 
                     <div class="form-group">
-                        <label for="buscar-codigo-proceso">Código del proceso</label>
-                        <input id="buscar-codigo-proceso" name="buscar-codigo-proceso" type="text" placeholder="PRO-001"
-                            required />
+                        <label for="buscar-historial">Código o producto</label>
+                        <input id="buscar-historial" name="buscar-historial" type="text" placeholder="PRD-001 o Pan" />
                     </div>
 
                     <div class="form-message" id="search-message"></div>
-                    <button type="submit" class="btn-submit">Buscar proceso</button>
+                    <button type="submit" class="btn-submit">Buscar</button>
                 </form>
             </div>
 
-            <form class="edit-form" action="#" method="post">
-                <h2>Editar proceso</h2>
-                <p>Modifica los detalles o elimina el proceso seleccionado.</p>
-
-                <div class="form-group">
-                    <label for="proceso-codigo">Código</label>
-                    <input id="proceso-codigo" name="proceso-codigo" type="text" readonly />
-                </div>
-
-                <div class="form-group">
-                    <label for="proceso-nombre">Nombre del proceso</label>
-                    <input id="proceso-nombre" name="proceso-nombre" type="text" />
-                </div>
-
-                <div class="form-group">
-                    <label for="proceso-descripcion">Descripción</label>
-                    <textarea id="proceso-descripcion" name="proceso-descripcion"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="proceso-duracion">Duración (minutos)</label>
-                    <input id="proceso-duracion" name="proceso-duracion" type="number" min="1" />
-                </div>
-
-                <div class="form-group">
-                    <label for="proceso-responsable">Responsable</label>
-                    <input id="proceso-responsable" name="proceso-responsable" type="text" />
-                </div>
-
-                <div class="button-row">
-                    <button type="submit" class="btn-submit">Guardar cambios</button>
-                    <button type="button" class="btn-delete" id="delete-process">Eliminar proceso</button>
-                </div>
-                <div class="form-message" id="edit-message"></div>
-            </form>
-
             <div class="list-section">
-                <h2>Procesos de producción</h2>
-                <p>Consulta la lista de procesos y fórmulas registradas.</p>
+                <h2>Historial de producción</h2>
+                <p>Consulta los procesos de fabricación registrados, con código consecutivo, cantidad y fecha.</p>
                 <div class="process-list" id="process-list"></div>
             </div>
         </section>
