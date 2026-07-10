@@ -8,6 +8,10 @@ const cantidadInput = document.getElementById('cantidad-fabricar');
 const previewList = document.getElementById('preview-list');
 const fabricarBtn = document.getElementById('fabricar-btn');
 const buscarHistorial = document.getElementById('buscar-historial');
+const fechaInicioInput = document.getElementById('fecha-inicio');
+const fechaFinInput = document.getElementById('fecha-fin');
+const reportList = document.getElementById('report-list');
+const generarReporteBtn = document.getElementById('generar-reporte');
 
 const firebaseUrl = 'https://proyectoacme-f63e6-default-rtdb.firebaseio.com';
 
@@ -21,6 +25,19 @@ function setMessage(element, message, success = false) {
 
 function isMateriaPrima(producto) {
   return !producto.receta || Object.keys(producto.receta).length === 0;
+}
+
+function calcularCantidadMaxima(producto) {
+  if (!producto || !producto.receta || !Object.keys(producto.receta).length) {
+    return 0;
+  }
+
+  return Object.entries(producto.receta).reduce((max, [codMateria, cantidadPorUnidad]) => {
+    const materia = productosCache[codMateria];
+    const disponible = materia ? (materia.stock || 0) : 0;
+    const posible = cantidadPorUnidad > 0 ? Math.floor(disponible / cantidadPorUnidad) : 0;
+    return Math.min(max, posible);
+  }, Infinity);
 }
 
 async function fetchProductos() {
@@ -145,6 +162,19 @@ function renderPreview() {
     previewList.appendChild(row);
   });
 
+  const maximo = calcularCantidadMaxima(producto);
+  const maxRow = document.createElement('div');
+  maxRow.className = `preview-item${cantidad > maximo ? ' insufficient' : ''}`;
+  maxRow.innerHTML = `
+    <span><strong>Cantidad máxima posible</strong></span>
+    <span>${maximo}</span>
+  `;
+  previewList.appendChild(maxRow);
+
+  if (cantidad > maximo) {
+    suficiente = false;
+  }
+
   fabricarBtn.disabled = !suficiente;
 }
 
@@ -185,6 +215,13 @@ fabricarForm.addEventListener('submit', async (event) => {
     const faltantes = requerimientos.filter((r) => r.disponible < r.requerido);
     if (faltantes.length) {
       setMessage(createMessage, 'Stock insuficiente de materia prima para fabricar esta cantidad.');
+      renderPreview();
+      return;
+    }
+
+    const maximo = calcularCantidadMaxima(producto);
+    if (cantidad > maximo) {
+      setMessage(createMessage, `No es posible fabricar más de ${maximo} unidades con la materia prima actual.`);
       renderPreview();
       return;
     }
@@ -256,8 +293,70 @@ function renderHistorial(historial, filtro = '') {
   });
 }
 
+function parseDateValue(value) {
+  if (!value) return null;
+  const fecha = new Date(value);
+  return Number.isNaN(fecha.getTime()) ? null : fecha;
+}
+
+function renderReportePorFechas(historial, fechaInicio, fechaFin) {
+  reportList.innerHTML = '';
+  const inicio = parseDateValue(fechaInicio);
+  const fin = parseDateValue(fechaFin);
+
+  if (!inicio && !fin) {
+    reportList.innerHTML = '<p>Selecciona un rango de fechas y presiona Generar reporte.</p>';
+    return;
+  }
+
+  if (!inicio || !fin) {
+    reportList.innerHTML = '<p>Selecciona una fecha de inicio y una fecha fin válidas.</p>';
+    return;
+  }
+
+  if (fin < inicio) {
+    reportList.innerHTML = '<p>La fecha fin no puede ser anterior a la fecha de inicio.</p>';
+    return;
+  }
+
+  const inicioDia = new Date(inicio);
+  inicioDia.setHours(0, 0, 0, 0);
+  const finDia = new Date(fin);
+  finDia.setHours(23, 59, 59, 999);
+
+  const entries = Object.values(historial)
+    .filter((registro) => {
+      if (!registro.fecha) return false;
+      const fechaRegistro = new Date(registro.fecha);
+      return fechaRegistro >= inicioDia && fechaRegistro <= finDia;
+    })
+    .sort((a, b) => new Date(a.fecha) - new Date(b.fecha));
+
+  if (!entries.length) {
+    reportList.innerHTML = '<p>No se encontraron registros dentro del rango de fechas seleccionado.</p>';
+    return;
+  }
+
+  entries.forEach((registro) => {
+    const fecha = registro.fecha ? new Date(registro.fecha).toLocaleDateString() : 'No especificada';
+    const card = document.createElement('div');
+    card.className = 'process-card';
+    card.innerHTML = `
+      <h3>${registro.productoNombre || 'Sin nombre'} (${registro.productoCodigo || ''})</h3>
+      <p><strong>Código producto:</strong> ${registro.productoCodigo || 'No disponible'}</p>
+      <p><strong>Cantidad producida:</strong> ${registro.cantidad}</p>
+      <p><strong>Fecha:</strong> ${fecha}</p>
+    `;
+    reportList.appendChild(card);
+  });
+}
+
 buscarHistorial.addEventListener('input', () => {
   renderHistorial(historialCache, buscarHistorial.value);
+});
+
+generarReporteBtn.addEventListener('click', () => {
+  renderReportePorFechas(historialCache, fechaInicioInput.value, fechaFinInput.value);
 });
 
 searchForm.addEventListener('submit', (event) => {

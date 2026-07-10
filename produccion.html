@@ -61,8 +61,21 @@
                         <input id="buscar-historial" name="buscar-historial" type="text" placeholder="PRD-001 o Pan" />
                     </div>
 
+                    <div class="form-group">
+                        <label for="fecha-inicio">Fecha inicio</label>
+                        <input id="fecha-inicio" name="fecha-inicio" type="date" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="fecha-fin">Fecha fin</label>
+                        <input id="fecha-fin" name="fecha-fin" type="date" />
+                    </div>
+
                     <div class="form-message" id="search-message"></div>
-                    <button type="submit" class="btn-submit">Buscar</button>
+                    <div class="button-row">
+                        <button type="submit" class="btn-submit">Buscar</button>
+                        <button type="button" class="btn-submit" id="generar-reporte">Generar reporte</button>
+                    </div>
                 </form>
             </div>
 
@@ -70,6 +83,12 @@
                 <h2>Historial de producción</h2>
                 <p>Consulta los procesos de fabricación registrados, con código consecutivo, cantidad y fecha.</p>
                 <div class="process-list" id="process-list"></div>
+            </div>
+
+            <div class="list-section">
+                <h2>Reporte por rango de fechas</h2>
+                <p>Muestra código del producto, nombre y cantidad producida para el rango seleccionado.</p>
+                <div class="process-list" id="report-list"></div>
             </div>
         </section>
     </main>
