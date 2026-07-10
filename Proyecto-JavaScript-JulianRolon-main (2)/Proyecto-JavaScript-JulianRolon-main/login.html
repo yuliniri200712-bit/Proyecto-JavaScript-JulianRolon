@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login - Acme</title>
+  <link rel="stylesheet" href="login.css" />
+</head>
+
+<body>
+  <main class="login-page">
+    <section class="login-card">
+      <div class="logo">
+        <h1>Acme</h1>
+        <p>Gestión de producción</p>
+      </div>
+
+      <div class="forms-grid">
+        <form class="login-form" action="#" method="post">
+          <h2>Acceder al sistema</h2>
+          <p>Ingresa tu número de identificación y contraseña.</p>
+
+          <div class="form-group">
+            <label for="identificacion">Número de identificación</label>
+            <input id="identificacion" name="identificacion" type="text" placeholder="12345678" required />
+          </div>
+
+          <div class="form-group">
+            <label for="contrasena">Contraseña</label>
+            <input id="contrasena" name="contrasena" type="password" placeholder="••••••••" required />
+          </div>
+
+          <div class="form-message" id="login-message"></div>
+          <button type="submit" class="btn-submit">Iniciar sesión</button>
+        </form>
+
+        <form class="register-form" action="#" method="post">
+          <h2>Registrar nuevo usuario</h2>
+          <p>Registra un usuario con identificación, nombre, cargo y contraseña.</p>
+
+          <div class="form-group">
+            <label for="registro-identificacion">Número de identificación</label>
+            <input id="registro-identificacion" name="registro-identificacion" type="text" placeholder="12345678"
+              required />
+          </div>
+
+          <div class="form-group">
+            <label for="nombre-completo">Nombre completo</label>
+            <input id="nombre-completo" name="nombre-completo" type="text" placeholder="Juan Pérez" required />
+          </div>
+
+          <div class="form-group">
+            <label for="cargo">Cargo</label>
+            <input id="cargo" name="cargo" type="text" placeholder="Administrador" required />
+          </div>
+
+          <div class="form-group">
+            <label for="registro-contrasena">Contraseña</label>
+            <input id="registro-contrasena" name="registro-contrasena" type="password" placeholder="••••••••"
+              required />
+          </div>
+
+          <div class="form-group">
+            <label for="confirmar-contrasena">Confirmar contraseña</label>
+            <input id="confirmar-contrasena" name="confirmar-contrasena" type="password" placeholder="••••••••"
+              required />
+          </div>
+
+          <div class="form-message" id="register-message"></div>
+          <button type="submit" class="btn-submit">Crear cuenta</button>
+        </form>
+      </div>
+    </section>
+  </main>
+  <script src="login.js"></script>
+</body>
+
+</html>

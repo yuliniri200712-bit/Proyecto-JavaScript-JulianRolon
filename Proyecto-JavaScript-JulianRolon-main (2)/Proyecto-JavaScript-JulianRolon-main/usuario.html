@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Módulo de Usuarios - Acme</title>
+  <link rel="stylesheet" href="usuario.css" />
+</head>
+
+<body>
+  <main class="login-page">
+    <section class="login-card">
+      <div class="logo">
+        <h1>Acme</h1>
+        <p>Módulo de usuarios</p>
+      </div>
+
+      <nav class="main-nav">
+        <a href="login.html">Login</a>
+        <a href="usuario.html">Usuarios</a>
+        <a href="productos.html">Productos</a>
+        <a href="produccion.html">Producción</a>
+      </nav>
+
+      <div class="forms-grid">
+        <form class="search-form" action="#" method="get">
+          <h2>Buscar usuario</h2>
+          <p>Consulta un usuario por número de identificación.</p>
+
+          <div class="form-group">
+            <label for="buscar-identificacion">Número de identificación</label>
+            <input id="buscar-identificacion" name="buscar-identificacion" type="text" placeholder="12345678"
+              required />
+          </div>
+
+          <div class="form-message" id="search-message"></div>
+          <button type="submit" class="btn-submit">Buscar usuario</button>
+        </form>
+
+        <form class="edit-form" action="#" method="post">
+          <h2>Editar usuario</h2>
+          <p>Actualiza datos o elimina el usuario seleccionado.</p>
+
+          <div class="form-group">
+            <label for="usuario-identificacion">Identificación</label>
+            <input id="usuario-identificacion" name="usuario-identificacion" type="text" readonly />
+          </div>
+
+          <div class="form-group">
+            <label for="usuario-nombre">Nombre completo</label>
+            <input id="usuario-nombre" name="usuario-nombre" type="text" />
+          </div>
+
+          <div class="form-group">
+            <label for="usuario-cargo">Cargo</label>
+            <input id="usuario-cargo" name="usuario-cargo" type="text" />
+          </div>
+
+          <div class="form-group">
+            <label for="usuario-contrasena">Contraseña</label>
+            <input id="usuario-contrasena" name="usuario-contrasena" type="password" />
+          </div>
+
+          <div class="form-message" id="edit-message"></div>
+          <div class="button-row">
+            <button type="submit" class="btn-submit">Guardar cambios</button>
+            <button type="button" class="btn-delete" id="delete-user">Eliminar usuario</button>
+          </div>
+        </form>
+      </div>
+
+      <div class="list-section">
+        <h2>Lista de usuarios</h2>
+        <p>Visualiza los usuarios registrados en el sistema.</p>
+        <div class="user-list" id="user-list"></div>
+      </div>
+    </section>
+  </main>
+  <script src="usuario.js"></script>
+</body>
+
+</html>
