@@ -63,8 +63,6 @@ async function deleteProducto(codigo) {
   return response.json();
 }
 
-/* --- Manejo de filas de ingredientes de la receta --- */
-
 function crearIngredienteRow() {
   const row = document.createElement('div');
   row.className = 'ingrediente-row';
@@ -117,8 +115,6 @@ function leerIngredientesFormulario() {
 
   return { receta, error };
 }
-
-/* --- Renderizado de la lista --- */
 
 function renderItemList(productos, filtro = '') {
   itemList.innerHTML = '';
@@ -173,8 +169,6 @@ function populateEditForm(item) {
     productoTipoInfo.textContent = `Tipo: Producto elaborado. Receta: ${receta}. El stock está bloqueado y solo aumenta al fabricar desde el módulo de Producción.`;
   }
 }
-
-/* --- Crear producto --- */
 
 createForm.addEventListener('submit', async (event) => {
   event.preventDefault();
@@ -244,8 +238,6 @@ createForm.addEventListener('submit', async (event) => {
   }
 });
 
-/* --- Buscar / filtrar --- */
-
 buscarTexto.addEventListener('input', () => {
   renderItemList(productosCache, buscarTexto.value);
 });
@@ -263,8 +255,6 @@ searchForm.addEventListener('submit', (event) => {
   setMessage(searchMessage, `${total} producto(s) encontrado(s).`, true);
   renderItemList(productosCache, texto);
 });
-
-/* --- Editar producto --- */
 
 editForm.addEventListener('submit', async (event) => {
   event.preventDefault();

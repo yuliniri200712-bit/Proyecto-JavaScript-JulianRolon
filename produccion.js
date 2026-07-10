@@ -104,8 +104,6 @@ function nextConsecutivo(historial) {
   return Math.max(...codigos) + 1;
 }
 
-/* --- Selección de producto elaborado --- */
-
 function poblarSelectProductos() {
   const seleccionActual = productoSelect.value;
   productoSelect.innerHTML = '<option value="">Selecciona un producto...</option>';
@@ -123,8 +121,6 @@ function poblarSelectProductos() {
     productoSelect.value = seleccionActual;
   }
 }
-
-/* --- Vista previa en tiempo real --- */
 
 function renderPreview() {
   const codigo = productoSelect.value;
@@ -180,8 +176,6 @@ function renderPreview() {
 
 productoSelect.addEventListener('change', renderPreview);
 cantidadInput.addEventListener('input', renderPreview);
-
-/* --- Fabricar --- */
 
 fabricarForm.addEventListener('submit', async (event) => {
   event.preventDefault();
@@ -256,8 +250,6 @@ fabricarForm.addEventListener('submit', async (event) => {
     setMessage(createMessage, 'Error al registrar la producción.');
   }
 });
-
-/* --- Historial --- */
 
 function renderHistorial(historial, filtro = '') {
   processList.innerHTML = '';
